@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/ChizhAndrey/cypress-demoqa/issues"
   },
-  "homepage": "https://github.com/ChizhAndrey/cypress-demoqa#readme"
+  "homepage": "https://github.com/ChizhAndrey/cypress-demoqa#readme",
+  "devDependencies": {
+    "cypress": "^12.6.0"
+  }
 }
