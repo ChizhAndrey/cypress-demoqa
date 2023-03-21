@@ -13,8 +13,35 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// Import commands.js using ES2015 syntax:
+
 import './commands'
 
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+// Hide fetch/XHR requests
+if (Cypress.config("hideXHR")) { 
+    const app = window.top; 
+    
+    if (!app.document.head.querySelector("[data-hide-command-log-request]")) { 
+        const style = app.document.createElement("style"); 
+        style.innerHTML = ".command-name-request, .command-name-xhr {display: none}"; 
+        style.setAttribute("data-hide-command-log-request", ""); 
+        app.document.head.appendChild(style); 
+    } 
+}
+
+//Hide uncaught exceptions
+if(Cypress.config("hideExc")) {
+    const app = window.top; 
+
+    Cypress.on("uncaught:exception", (err, runnable) => {
+        // returning false here prevents Cypress from
+        // failing the test
+        return false
+    })
+
+    if(!app.document.head.querySelector("[data-hide-unhandled-exception-log]")) {
+        const style = app.document.createElement("style");
+        style.innerHTML = ".command-name-uncaught-exception {display: none}";
+        style.setAttribute("data-hide-unhandled-exception-log", "");
+        app.document.head.appendChild(style);
+    }
+}
