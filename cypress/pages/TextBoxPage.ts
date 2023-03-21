@@ -17,7 +17,8 @@ class TextBoxPage {
         outputName: () => cy.get("#name"),
         outputEmail: () => cy.get("#email"),
         outputCurrentAddress: () => cy.get("#currentAddress"),
-        outputPermanentAddress: () => cy.get("#permanentAddress")
+        outputPermanentAddress: () => cy.get("#permanentAddress"),
+        outputFields: () => cy.get("#output").find("div").children(),
     };
 
     visit() {
@@ -60,6 +61,16 @@ class TextBoxPage {
             this.elements.outputEmail().should("include.text", data.userEmail);
             this.elements.outputCurrentAddress().should("include.text", data.currentAddress);
             this.elements.outputPermanentAddress().should("include.text", data.permanentAddress);
+        });
+    }
+
+    submitTextBoxWithEmptyFields() {
+        this.elements.userForm().within(() => {
+            this.elements.userName().clear();
+            this.elements.userEmail().clear();
+            this.elements.currentAddress().clear();
+            this.elements.permanentAddress().clear();
+            this.submit();
         });
     }
 }
