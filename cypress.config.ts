@@ -1,15 +1,17 @@
-const { defineConfig } = require("cypress");
+import { defineConfig } from "cypress";
 
-module.exports = defineConfig({
+export default defineConfig({
+  env: {
+    hideXHR: true,
+    hideExc: true,
+  },
   e2e: {
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
     
     baseUrl: "https://demoqa.com/",
-    hideXHR: true,
-    hideExc: true,
     viewportHeight: 1080,
-    viewportWidth: 1920
+    viewportWidth: 1920,
   },
 });
