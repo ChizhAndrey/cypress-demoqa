@@ -31,7 +31,7 @@ describe("Interacting with different elements", function() {
     })
 
     describe("Checkbox", function() {
-        it.only("Expand all list items", function() {
+        it("Expand all list items", function() {
             checkBoxPage.visit();
             checkBoxPage.expandAllListItems();
             checkBoxPage.checkParentListNodesExpanded();
@@ -60,6 +60,18 @@ describe("Interacting with different elements", function() {
                 .should("have.length", 2)
                 .and("include.text", "react")
                 .and("include.text", "angular");
+        })
+    })
+
+    describe("Radio button", function() {
+        it.only("Check that text success matches the text of the selected radio button", function() {
+            cy.visit("/radio-button");
+
+            cy.get("label[for='yesRadio']").click();
+            cy.get(".text-success").should("have.text", "Yes");
+
+            cy.get("label[for='impressiveRadio']").click();
+            cy.get(".text-success").should("have.text", "Impressive");
         })
     })
 })
