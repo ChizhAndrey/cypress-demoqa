@@ -17,7 +17,7 @@
 import './commands'
 
 // Hide fetch/XHR requests
-if (Cypress.config("hideXHR")) { 
+if (Cypress.env("hideXHR")) { 
     const app = window.top; 
     
     if (!app.document.head.querySelector("[data-hide-command-log-request]")) { 
@@ -29,7 +29,7 @@ if (Cypress.config("hideXHR")) {
 }
 
 //Hide uncaught exceptions
-if(Cypress.config("hideExc")) {
+if(Cypress.env("hideExc")) {
     const app = window.top; 
 
     Cypress.on("uncaught:exception", (err, runnable) => {
