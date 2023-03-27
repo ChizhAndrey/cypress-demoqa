@@ -1,5 +1,7 @@
 import textBoxPage from "../pages/textBoxPage";
 import checkBoxPage from "../pages/CheckBoxPage";
+import webTablePage from "../pages/WebTablePage";
+const { _ } = Cypress;  //(Lodash)
 
 describe("Interacting with different elements", function() {
 
@@ -63,8 +65,8 @@ describe("Interacting with different elements", function() {
         })
     })
 
-    describe("Radio button", function() {
-        it.only("Check that text success matches the text of the selected radio button", function() {
+    describe.only("Radio button", function() {
+        it("Check that text success matches the text of the selected radio button", function() {
             cy.visit("/radio-button");
 
             cy.get("label[for='yesRadio']").click();
@@ -74,4 +76,81 @@ describe("Interacting with different elements", function() {
             cy.get(".text-success").should("have.text", "Impressive");
         })
     })
+
+    describe.only("Web table", function() {
+        it("Add user to web table by registration form", function() {
+            webTablePage.visit();
+            cy.fixture("dataForWebTableRegForm").then(data => {
+                webTablePage.elements.addNewRecordButton().click();
+                webTablePage.fillAndSubmitRegForm(data);
+                webTablePage.elements.tableRows().then($rows => {
+                    webTablePage.createArrayObjectsFromTableRows($rows).should("deep.include", data);
+                })
+            })
+        })
+
+        it("Delete user from web table", function() {
+            const userEmail = "alden@example.com";
+            webTablePage.visit();
+            webTablePage.deleteRowFromTable(userEmail)
+            webTablePage.elements.tableRows().should("not.contain", userEmail);
+        })
+
+        it("Update user in web table", function() {
+            const userEmail = "alden@example.com";
+            webTablePage.visit();
+            cy.fixture("dataForWebTableRegForm").then(data => {
+                webTablePage.updateRowInTable(userEmail);
+                webTablePage.fillAndSubmitRegForm(data);
+                webTablePage.elements.tableRows().then($rows => {
+                    webTablePage.createArrayObjectsFromTableRows($rows).should("deep.include", data);
+                })
+                webTablePage.elements.tableRows().should("not.contain", userEmail);
+            })
+        })
+
+        it("Filter table rows by search word", function() {
+            const searchWord = "erra";
+            webTablePage.visit();
+            webTablePage.filterTableRowsBySearchWord(searchWord);
+            webTablePage.checkTableRowsContainSearchWord(searchWord);
+        })
+
+        it("Sort table in ascending order by first name", function() {
+            webTablePage.visit();
+            webTablePage.sortTableByFirstName("asc");
+            webTablePage.checkColumnIsSortedInOrder("firstName", "asc");
+        })
+    
+        it("Sort table in descending order by first name", function() {
+            webTablePage.visit();
+            webTablePage.sortTableByFirstName("desc");
+            webTablePage.checkColumnIsSortedInOrder("firstName", "desc");
+        })
+
+        it("Check the scaling of the number of rows in the table", function() {
+            webTablePage.visit();
+            webTablePage.checkScalingOfNumberOfRowsInTable();
+        })
+
+        it("Check table page navigation", function() {
+            webTablePage.visit();
+            webTablePage.elements.pageSizeSelect().select("5 rows").should("have.value", 5);
+            webTablePage.elements.pageChangeInput().should("have.value", 1);
+            webTablePage.elements.buttonPreviousPage().should("be.disabled");
+            webTablePage.elements.buttonNextPage().should("be.disabled");
+    
+            webTablePage.fillTableWithGeneratedData(5);
+
+            webTablePage.goToNextTablePage();
+            webTablePage.elements.pageChangeInput().should("have.value", 2);
+
+            webTablePage.goToPreviousTablePage();
+            webTablePage.elements.pageChangeInput().should("have.value", 1);
+
+            webTablePage.changePageByInput(2);
+            webTablePage.elements.pageChangeInput().should("have.value", 2);
+        })
+    })
+
 })
