@@ -173,4 +173,51 @@ describe("Interacting with different elements", function() {
         })
     })
 
+    describe.only("Links", function() {
+        it("Check the new tab opening by clicking on the link", function() {
+            cy.visit("/links");
+
+            cy.get("#simpleLink").then($link => {
+                cy.wrap($link)
+                    .invoke("removeAttr", "target")
+                    .click();
+    
+                cy.url().should("eq", `${$link.attr("href")}/`);
+            })
+        })
+
+        it("Check the new tab opening by clicking on the dynamic text link", function() {
+            cy.visit("/links");
+
+            cy.get("a").contains(/^Home[a-zA-Z0-9]*[a-zA-Z0-9]/).then($link => {
+                cy.wrap($link)
+                    .invoke("removeAttr", "target")
+                    .click();
+    
+                cy.url().should("eq", `${$link.attr("href")}/`);
+            })
+        })
+
+        it("Check that the links making the API call return the correct response", function() {
+            cy.visit("/links");
+
+            cy.intercept("GET", "https://demoqa.com/*").as("apiCall");
+
+            cy.get("h5:contains('Following links will send an api call')")
+                .nextUntil("#linkResponse")
+                .children()
+                .then($links => {
+                    $links.each((i, link) => {
+                        cy.wrap(link).click();
+    
+                        cy.wait("@apiCall")
+                            .then(interception => interception.response)
+                            .then(({statusCode, statusMessage}) => {   
+                                cy.get("#linkResponse")
+                                    .should("have.text", `Link has responded with staus ${statusCode} and status text ${statusMessage}`);
+                        })
+                    })
+                })  
+        })
+    })
 })
