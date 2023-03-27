@@ -65,7 +65,7 @@ describe("Interacting with different elements", function() {
         })
     })
 
-    describe.only("Radio button", function() {
+    describe("Radio button", function() {
         it("Check that text success matches the text of the selected radio button", function() {
             cy.visit("/radio-button");
 
@@ -77,7 +77,7 @@ describe("Interacting with different elements", function() {
         })
     })
 
-    describe.only("Web table", function() {
+    describe("Web table", function() {
         it("Add user to web table by registration form", function() {
             webTablePage.visit();
             cy.fixture("dataForWebTableRegForm").then(data => {
@@ -150,6 +150,26 @@ describe("Interacting with different elements", function() {
 
             webTablePage.changePageByInput(2);
             webTablePage.elements.pageChangeInput().should("have.value", 2);
+        })
+    })
+
+    describe("Buttons", function() {
+        it("Interaction with the button by double-clicking", function() {
+            cy.visit("/buttons");
+            cy.get("#doubleClickBtn").dblclick();
+            cy.get("#doubleClickMessage").should("have.text", "You have done a double click");
+        })
+
+        it("Interaction with the button using the right click", function() {
+            cy.visit("/buttons");
+            cy.get("#rightClickBtn").rightclick();
+            cy.get("#rightClickMessage").should("have.text", "You have done a right click");
+        })
+
+        it("Interaction with the button with dynamic id using the click", function() {
+            cy.visit("/buttons");
+            cy.get("button").contains(/^Click Me/).click();
+            cy.get("#dynamicClickMessage").should("have.text", "You have done a dynamic click");
         })
     })
 
