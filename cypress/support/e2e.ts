@@ -17,19 +17,21 @@
 import './commands'
 
 // Hide fetch/XHR requests
-if (Cypress.env("hideXHR")) { 
+if (Cypress.config("hideXHRAndFetch")) { 
     const app = window.top; 
     
-    if (!app.document.head.querySelector("[data-hide-command-log-request]")) { 
-        const style = app.document.createElement("style"); 
-        style.innerHTML = ".command-name-request, .command-name-xhr {display: none}"; 
-        style.setAttribute("data-hide-command-log-request", ""); 
-        app.document.head.appendChild(style); 
-    } 
+    if(app) {
+        if (!app.document.head.querySelector("[data-hide-command-log-request]")) { 
+            const style = app.document.createElement("style"); 
+            style.innerHTML = ".command-name-request, .command-name-xhr {display: none}"; 
+            style.setAttribute("data-hide-command-log-request", ""); 
+            app.document.head.appendChild(style); 
+        } 
+    }
 }
 
 //Hide uncaught exceptions
-if(Cypress.env("hideExc")) {
+if(Cypress.config("hideExc")) {
     const app = window.top; 
 
     Cypress.on("uncaught:exception", (err, runnable) => {
@@ -38,10 +40,12 @@ if(Cypress.env("hideExc")) {
         return false
     })
 
-    if(!app.document.head.querySelector("[data-hide-unhandled-exception-log]")) {
-        const style = app.document.createElement("style");
-        style.innerHTML = ".command-name-uncaught-exception {display: none}";
-        style.setAttribute("data-hide-unhandled-exception-log", "");
-        app.document.head.appendChild(style);
+    if(app) {
+        if(!app.document.head.querySelector("[data-hide-unhandled-exception-log]")) {
+            const style = app.document.createElement("style");
+            style.innerHTML = ".command-name-uncaught-exception {display: none}";
+            style.setAttribute("data-hide-unhandled-exception-log", "");
+            app.document.head.appendChild(style);
+        }
     }
 }
