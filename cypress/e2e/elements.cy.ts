@@ -173,7 +173,7 @@ describe("Interacting with different elements", function() {
         })
     })
 
-    describe.only("Links", function() {
+    describe("Links", function() {
         it("Check the new tab opening by clicking on the link", function() {
             cy.visit("/links");
 
@@ -212,9 +212,11 @@ describe("Interacting with different elements", function() {
     
                         cy.wait("@apiCall")
                             .then(interception => interception.response)
-                            .then(({statusCode, statusMessage}) => {   
-                                cy.get("#linkResponse")
-                                    .should("have.text", `Link has responded with staus ${statusCode} and status text ${statusMessage}`);
+                            .then(res => {
+                                if("statusCode" in res) {
+                                    cy.get("#linkResponse")
+                                        .should("have.text", `Link has responded with staus ${res.statusCode} and status text ${res.statusMessage}`);
+                                }
                         })
                     })
                 })  
