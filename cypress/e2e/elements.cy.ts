@@ -1,6 +1,7 @@
 import textBoxPage from "../pages/textBoxPage";
 import checkBoxPage from "../pages/CheckBoxPage";
 import webTablePage from "../pages/WebTablePage";
+import { checkHTTPResponseStatusCode } from "../support/utilityFunctions";
 const { _ } = Cypress;  //(Lodash)
 
 describe("Interacting with different elements", function() {
@@ -220,6 +221,32 @@ describe("Interacting with different elements", function() {
                         })
                     })
                 })  
+        })
+    })
+
+    describe("Broken Links", function() {
+        it("Check images has loaded", function() {
+            cy.visit("/broken");
+
+            cy.get(".col-md-6").find("img").each(($img: JQuery<HTMLImageElement>) => {
+                cy.wrap($img)
+                    .should("be.visible")
+                    .and("have.prop", "naturalWidth")
+                    .then(naturalWidth => expect(naturalWidth).to.be.greaterThan(0));       
+            }) 
+        })
+
+        it("Check that links are not broken", function() {
+            cy.visit("/broken");
+
+            cy.get(".col-md-6").find("a").each(($link: JQuery<HTMLAnchorElement>) => { 
+                if($link.prop("href")) {
+                    cy.request({
+                        url: $link.prop("href"),
+                        failOnStatusCode: false,
+                    }).then(response => checkHTTPResponseStatusCode(response, [200], $link))
+                }
+            })
         })
     })
 })
