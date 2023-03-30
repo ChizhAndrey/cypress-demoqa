@@ -15,7 +15,7 @@ export const checkParentNodesExpanded = ($elements: JQuery<HTMLElement>) => {
                     el,
                     isExpanded,
                   }
-                },
+              },
           })
         } else {
           throw new Error("Not all parent list nodes are expanded");
@@ -33,9 +33,9 @@ export const checkTableRowsForSubstring = ($rows: JQuery<HTMLElement>, searchWor
       //Если строка пустая - пропускаем
       if(!row.classList.contains("-padRow")) {
           //Создаем из строки массив значений ячеек
-          const rowArray = Array.from(row.children).map(cell => cell.textContent);
+          const rowArray = Array.from(row.children).map(cell => cell.textContent ? cell.textContent : "");
 
-          let stringThatContainsSubstring: string;
+          let stringThatContainsSubstring!: string;
           const isIncludes = rowArray.some(str => {
               stringThatContainsSubstring = str;
               return str.toLocaleLowerCase().includes(searchWord);
@@ -51,12 +51,11 @@ export const checkTableRowsForSubstring = ($rows: JQuery<HTMLElement>, searchWor
                         row,
                         isIncludes,
                       }
-                    },
+                  },
               })
             } else {
               throw new Error("Not all rows contain a substring");
             }
       }
   })
-
 }
