@@ -3,16 +3,16 @@ import { checkTableRowsForSubstring } from "../support/utilityFunctions";
 const { _ } = Cypress;  //(Lodash)
 
 
-interface UserData {
+export interface WebTableUserData {
     firstName: string, 
     lastName: string, 
-    userEmail: string, 
+    email: string, 
     age: number, 
     salary: number, 
     department: string,
 }
 
-type THC = "firstName" | "lastName" | "age" | "email" | "salary" | "department";
+type THC = keyof WebTableUserData;
 
 class WebTablePage {
     elements = {
@@ -66,21 +66,21 @@ class WebTablePage {
         this.elements.submitButton().click();
     }
 
-    fillAndSubmitRegForm(data: UserData) {
+    fillAndSubmitRegForm(data: WebTableUserData) {
         this.enterFirstNameToRegForm(data.firstName);
         this.enterLastNameToRegForm(data.lastName);
-        this.enterEmailToRegForm(data.userEmail);
+        this.enterEmailToRegForm(data.email);
         this.enterAgeToRegForm(data.age);
         this.enterSalaryToRegForm(data.salary);
         this.enterDepartmentToRegForm(data.department);
         this.submit();
     }
 
-    createUserDataFromTableRow(data: string[]): UserData {
+    createUserDataFromTableRow(data: string[]): WebTableUserData {
         return {
             firstName: data[0],
             lastName: data[1],
-            userEmail: data[3],
+            email: data[3],
             age: parseInt(data[2], 10),
             salary: parseInt(data[4], 10),
             department: data[5]
@@ -88,7 +88,7 @@ class WebTablePage {
     }
 
     createArrayObjectsFromTableRows($rows: JQuery<HTMLElement>) {
-        const rowsArray: UserData[] = [];
+        const rowsArray: WebTableUserData[] = [];
 
         $rows.each((i, row) => {
             //Если строка пустая - пропускаем
@@ -212,14 +212,14 @@ class WebTablePage {
         this.elements.pageChangeInput().type(`${pageNumber}`);
     }
 
-    private createUsersDataForWebTable(count: number): UserData[] {
-        const usersArray: UserData[] = [];
+    private createUsersDataForWebTable(count: number): WebTableUserData[] {
+        const usersArray: WebTableUserData[] = [];
 
         for(let i = 0; i < count; i++) {
-            const user: UserData = {
+            const user: WebTableUserData = {
                 firstName: faker.name.firstName(),
                 lastName: faker.name.lastName(),
-                userEmail: faker.internet.email(),
+                email: faker.internet.email(),
                 age: faker.datatype.number({
                     "min": 18,
                     "max": 70

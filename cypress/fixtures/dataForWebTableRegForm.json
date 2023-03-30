@@ -1,7 +1,7 @@
 {
     "firstName": "Andrey",
     "lastName": "Chizh",
-    "userEmail": "testtest@gmail.com",
+    "email": "testtest@gmail.com",
     "age": 28,
     "salary": 50000,
     "department": "QA"

@@ -1,4 +1,4 @@
-interface UserData {
+export interface TextBoxUserData {
     userName?: string,
     userEmail?: string,
     currentAddress?: string,
@@ -45,7 +45,7 @@ class TextBoxPage {
         return this.elements.submitButton().click();
     }
 
-    fillAndSubmitTextBox(data: UserData) {
+    fillAndSubmitTextBox(data: TextBoxUserData) {
         this.elements.userForm().within(() => {
             this.enterUserName(data.userName ? data.userName : `{selectAll}{backspace}`);
             this.enterUserEmail(data.userEmail ? data.userEmail : `{selectAll}{backspace}`);
@@ -55,7 +55,7 @@ class TextBoxPage {
         });
     }
 
-    checkOutput(data: UserData) {
+    checkOutput(data: TextBoxUserData) {
         this.elements.output().within(() => {
             this.elements.outputName().should("include.text", data.userName);
             this.elements.outputEmail().should("include.text", data.userEmail);

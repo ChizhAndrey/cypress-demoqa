@@ -1,6 +1,6 @@
-import textBoxPage from "../pages/textBoxPage";
+import {default as textBoxPage, TextBoxUserData} from "../pages/textBoxPage";
 import checkBoxPage from "../pages/CheckBoxPage";
-import webTablePage from "../pages/WebTablePage";
+import {default as webTablePage, WebTableUserData} from "../pages/WebTablePage";
 import { checkHTTPResponseStatusCode } from "../support/utilityFunctions";
 const { _ } = Cypress;  //(Lodash)
 
@@ -9,7 +9,7 @@ describe("Interacting with different elements", function() {
     describe("Textbox", function() {
         it("Fill in and submit the textbox with valid data", function() {
             textBoxPage.visit();
-            cy.fixture("validDataForTextBox").then(data => {
+            cy.fixture<TextBoxUserData>("validDataForTextBox").then(data => {
                 textBoxPage.fillAndSubmitTextBox(data);
                 textBoxPage.checkOutput(data);
             })
@@ -23,7 +23,7 @@ describe("Interacting with different elements", function() {
     
         it("Fill in and submit the textbox with the wrong email address", function() {
             textBoxPage.visit();
-            cy.fixture("dataForTextBoxWithWrongEmail").then(data => {
+            cy.fixture<TextBoxUserData>("dataForTextBoxWithWrongEmail").then(data => {
                 textBoxPage.fillAndSubmitTextBox(data);
                 textBoxPage.elements.userForm().within(() => {
                     textBoxPage.elements.userEmail().should("have.css", "border", "1px solid rgb(255, 0, 0)");
@@ -78,10 +78,10 @@ describe("Interacting with different elements", function() {
         })
     })
 
-    describe("Web table", function() {
+    describe.only("Web table", function() {
         it("Add user to web table by registration form", function() {
             webTablePage.visit();
-            cy.fixture("dataForWebTableRegForm").then(data => {
+            cy.fixture<WebTableUserData>("dataForWebTableRegForm").then(data => {
                 webTablePage.elements.addNewRecordButton().click();
                 webTablePage.fillAndSubmitRegForm(data);
                 webTablePage.elements.tableRows().then($rows => {
@@ -100,7 +100,7 @@ describe("Interacting with different elements", function() {
         it("Update user in web table", function() {
             const userEmail = "alden@example.com";
             webTablePage.visit();
-            cy.fixture("dataForWebTableRegForm").then(data => {
+            cy.fixture<WebTableUserData>("dataForWebTableRegForm").then(data => {
                 webTablePage.updateRowInTable(userEmail);
                 webTablePage.fillAndSubmitRegForm(data);
                 webTablePage.elements.tableRows().then($rows => {
