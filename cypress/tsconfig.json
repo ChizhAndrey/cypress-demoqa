@@ -1,8 +1,26 @@
 {
-    "compilerOptions": {
-      "target": "es5",
-      "lib": ["es5", "dom"],
-      "types": ["cypress", "node"]
-    },
-    "include": ["**/*.ts"]
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["es5", "dom"],
+    "types": ["cypress", "node"],
+    //включает добавление строки "use strict" в каждый скомпилированный файл
+    "alwaysStrict": true,
+    //подсвечивает все места где тип переменной не определён, значит он any
+    "noImplicitAny": true,
+    //с данным флагом компилятор больше не позволяет передавать undefined или 
+    //null туда, где ожидаются переменные других типов, если это не разрешено явно
+    "strictNullChecks": true,
+    //следит, чтобы объявленные свойства класса всегда были инициализированы
+    "strictPropertyInitialization": true,
+    //включает более строгую проверку сигнатур функций
+    "strictFunctionTypes": true,
+    //при использовании this проверяет, что контекст выполнения известен
+    "noImplicitThis": true,
+    //включает более строгую проверку сигнатур при использовании 
+    //соответствующих методов: bind, call, apply
+    "strictBindCallApply": true,
+    //проверяет, чтобы все ветки функции возвращали значение
+    "noImplicitReturns": true,
+  },
+  "include": ["**/*.ts"],
 }
