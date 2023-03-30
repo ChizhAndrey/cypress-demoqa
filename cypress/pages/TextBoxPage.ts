@@ -47,10 +47,10 @@ class TextBoxPage {
 
     fillAndSubmitTextBox(data: UserData) {
         this.elements.userForm().within(() => {
-            this.enterUserName(data.userName);
-            this.enterUserEmail(data.userEmail);
-            this.enterCurrentAddress(data.currentAddress);
-            this.enterPermanentAddress(data.permanentAddress);
+            this.enterUserName(data.userName ? data.userName : `{selectAll}{backspace}`);
+            this.enterUserEmail(data.userEmail ? data.userEmail : `{selectAll}{backspace}`);
+            this.enterCurrentAddress(data.currentAddress ? data.currentAddress : `{selectAll}{backspace}`);
+            this.enterPermanentAddress(data.permanentAddress ? data.permanentAddress : `{selectAll}{backspace}`);
             this.submit();
         });
     }

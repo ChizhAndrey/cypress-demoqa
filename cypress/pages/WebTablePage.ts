@@ -94,7 +94,7 @@ class WebTablePage {
             //Если строка пустая - пропускаем
             if(!row.classList.contains("-padRow")) {
                 //Создаем из строки массив значений ячеек
-                const rowArray = Array.from(row.children).map(cell => cell.textContent);
+                const rowArray = Array.from(row.children).map(cell => cell.textContent ? cell.textContent : "");
 
                 //Создаем из массива объект и пушим в массив
                 rowsArray.push(this.createUserDataFromTableRow(rowArray));
@@ -171,7 +171,7 @@ class WebTablePage {
 
             switch(thc) {
                 case "firstName":
-                    arr.push(row.children[0].textContent);
+                    arr.push(row.children[0].textContent as string);
                     break;
             }
         })
