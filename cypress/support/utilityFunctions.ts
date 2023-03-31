@@ -3,7 +3,7 @@ const { _ } = Cypress;  //(Lodash)
 
 export const checkParentNodesExpanded = ($elements: JQuery<HTMLElement>) => {
     $elements.each((i, el) => {
-        const isParentNode = el.classList.contains("rct-node-parent")
+        const isParentNode = el.classList.contains("rct-node-parent");
 
         if(isParentNode) {
             const isExpanded = el.classList.contains("rct-node-expanded");
@@ -92,8 +92,8 @@ export const checkHTTPResponseStatusCode = (response: Cypress.Response<any>, sta
 
 //Устанавливает задачу на удаление папки "downloads".
 export const deleteDownloadsFolder = () => {
-    const downloadsFolder = Cypress.config("downloadsFolder")
-    cy.task("deleteFolder", downloadsFolder)
+    const downloadsFolder = Cypress.config("downloadsFolder");
+    cy.task("deleteFolder", downloadsFolder);
 }
   
 //Читает файл используя переданную кодировку из папки "donwloads".

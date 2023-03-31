@@ -1,7 +1,7 @@
 import {default as textBoxPage, TextBoxUserData} from "../pages/textBoxPage";
 import checkBoxPage from "../pages/CheckBoxPage";
 import {default as webTablePage, WebTableUserData} from "../pages/WebTablePage";
-import { checkHTTPResponseStatusCode } from "../support/utilityFunctions";
+import { checkHTTPResponseStatusCode, deleteDownloadsFolder, readFileFromDownloads } from "../support/utilityFunctions";
 const { _ } = Cypress;  //(Lodash)
 
 describe("Interacting with different elements", function() {
@@ -78,7 +78,7 @@ describe("Interacting with different elements", function() {
         })
     })
 
-    describe.only("Web table", function() {
+    describe("Web table", function() {
         it("Add user to web table by registration form", function() {
             webTablePage.visit();
             cy.fixture<WebTableUserData>("dataForWebTableRegForm").then(data => {
@@ -247,6 +247,35 @@ describe("Interacting with different elements", function() {
                     }).then(response => checkHTTPResponseStatusCode(response, [200], $link))
                 }
             })
+        })
+    })
+
+    describe.only("Upload and download files", function() {
+        it("Check that clicking on the link downloads the image", function() {
+            deleteDownloadsFolder();
+
+            cy.visit("/upload-download");
+
+            cy.get("#downloadButton").click();
+            readFileFromDownloads("sampleFile.jpeg", "base64");
+        })
+
+        it("Check file upload capability", function() {
+            let fileName = "dog.jpeg";
+
+            cy.visit("/upload-download");
+            
+            cy.get("input[type='file']")
+                .selectFile("cypress/fixtures/dog.jpeg")
+                .then($input =>  {
+                    const files = ($input[0] as HTMLInputElement).files;
+                    if(files) {
+                        expect(files[0].name).to.eq("dog.jpeg");
+                        expect(files[0].type).to.eq("image/jpeg");
+                    }
+                })
+
+            cy.get("#uploadedFilePath").should("have.text", `C:\\fakepath\\${fileName}`);
         })
     })
 })

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["es5", "dom"],
+    "lib": ["ES2022", "dom"],
     "types": ["cypress", "node"],
     //включает добавление строки "use strict" в каждый скомпилированный файл
     "alwaysStrict": true,
