@@ -1,6 +1,6 @@
-import {default as textBoxPage, TextBoxUserData} from "../pages/textBoxPage";
+import { textBoxPage, TextBoxUserData } from "../pages/TextBoxPage";
 import checkBoxPage from "../pages/CheckBoxPage";
-import {default as webTablePage, WebTableUserData} from "../pages/WebTablePage";
+import { webTablePage, WebTableEmployeeData } from "../pages/WebTablePage";
 import { checkHTTPResponseStatusCode, deleteDownloadsFolder, readFileFromDownloads } from "../support/utilityFunctions";
 const { _ } = Cypress;  //(Lodash)
 
@@ -11,6 +11,9 @@ describe("Interacting with different elements", function() {
             textBoxPage.visit();
             cy.fixture<TextBoxUserData>("validDataForTextBox").then(data => {
                 textBoxPage.fillAndSubmitTextBox(data);
+                textBoxPage.elements.outoutContainer()
+                    .should("not.have.class", "undefined")
+                    .and("have.class", "border");
                 textBoxPage.checkOutput(data);
             })
         })
@@ -18,6 +21,9 @@ describe("Interacting with different elements", function() {
         it("Submit the textbox with empty fields", function() {
             textBoxPage.visit();
             textBoxPage.submitTextBoxWithEmptyFields();
+            textBoxPage.elements.outoutContainer()
+                .should("not.have.class", "undefined")
+                .and("not.have.class", "border");
             textBoxPage.elements.outputFields().should("not.be.exist");
         })
     
@@ -28,19 +34,22 @@ describe("Interacting with different elements", function() {
                 textBoxPage.elements.userForm().within(() => {
                     textBoxPage.elements.userEmail().should("have.css", "border", "1px solid rgb(255, 0, 0)");
                 });
+                textBoxPage.elements.outoutContainer()
+                    .should("have.class", "undefined")
+                    .and("not.have.class", "border");
                 textBoxPage.elements.outputFields().should("not.be.exist");
             })
         })
     })
 
     describe("Checkbox", function() {
-        it("Expand all list items", function() {
+        it("Expand all checkboxes", function() {
             checkBoxPage.visit();
             checkBoxPage.expandAllListItems();
             checkBoxPage.checkParentListNodesExpanded();
         })
     
-        it("Collapse all list items", function() {
+        it("Collapse all checkboxes", function() {
             checkBoxPage.visit();
             checkBoxPage.expandAllListItems();
             checkBoxPage.collapseAllListItems();
@@ -49,7 +58,7 @@ describe("Interacting with different elements", function() {
                 .and("contain.class", "rct-node-collapsed")
         })
 
-        it("Check the boxes for angular and react", function() {
+        it("Check the checkboxes in the list", function() {
             checkBoxPage.visit();
             checkBoxPage.expandAllListItems();
     
@@ -67,7 +76,7 @@ describe("Interacting with different elements", function() {
     })
 
     describe("Radio button", function() {
-        it("Check that text success matches the text of the selected radio button", function() {
+        it("Select radio button", function() {
             cy.visit("/radio-button");
 
             cy.get("label[for='yesRadio']").click();
@@ -79,9 +88,9 @@ describe("Interacting with different elements", function() {
     })
 
     describe("Web table", function() {
-        it("Add user to web table by registration form", function() {
+        it("Add employee to the web table using the registration form", function() {
             webTablePage.visit();
-            cy.fixture<WebTableUserData>("dataForWebTableRegForm").then(data => {
+            cy.fixture<WebTableEmployeeData>("dataForWebTableRegForm").then(data => {
                 webTablePage.elements.addNewRecordButton().click();
                 webTablePage.fillAndSubmitRegForm(data);
                 webTablePage.elements.tableRows().then($rows => {
@@ -90,17 +99,17 @@ describe("Interacting with different elements", function() {
             })
         })
 
-        it("Delete user from web table", function() {
+        it("Remove employee from web table", function() {
             const userEmail = "alden@example.com";
             webTablePage.visit();
             webTablePage.deleteRowFromTable(userEmail)
             webTablePage.elements.tableRows().should("not.contain", userEmail);
         })
 
-        it("Update user in web table", function() {
+        it("Update employee data in web table", function() {
             const userEmail = "alden@example.com";
             webTablePage.visit();
-            cy.fixture<WebTableUserData>("dataForWebTableRegForm").then(data => {
+            cy.fixture<WebTableEmployeeData>("dataForWebTableRegForm").then(data => {
                 webTablePage.updateRowInTable(userEmail);
                 webTablePage.fillAndSubmitRegForm(data);
                 webTablePage.elements.tableRows().then($rows => {
@@ -110,31 +119,31 @@ describe("Interacting with different elements", function() {
             })
         })
 
-        it("Filter table rows by search word", function() {
-            const searchWord = "erra";
+        it("Filter web table by keyword", function() {
+            const keyword = "erra";
             webTablePage.visit();
-            webTablePage.filterTableRowsBySearchWord(searchWord);
-            webTablePage.checkTableRowsContainSearchWord(searchWord);
+            webTablePage.filterTableRowsBySearchWord(keyword);
+            webTablePage.checkTableRowsContainSearchWord(keyword);
         })
 
-        it("Sort table in ascending order by first name", function() {
+        it("Sort web table in ascending order by the «First Name» column", function() {
             webTablePage.visit();
             webTablePage.sortTableByFirstName("asc");
             webTablePage.checkColumnIsSortedInOrder("firstName", "asc");
         })
     
-        it("Sort table in descending order by first name", function() {
+        it("Sort web table in descending order by the «First Name» column", function() {
             webTablePage.visit();
             webTablePage.sortTableByFirstName("desc");
             webTablePage.checkColumnIsSortedInOrder("firstName", "desc");
         })
 
-        it("Check the scaling of the number of rows in the table", function() {
+        it("Scaling the number of rows in a web table", function() {
             webTablePage.visit();
             webTablePage.checkScalingOfNumberOfRowsInTable();
         })
 
-        it("Check table page navigation", function() {
+        it("Navigation of pages in the web table", function() {
             webTablePage.visit();
             webTablePage.elements.pageSizeSelect().select("5 rows").should("have.value", 5);
             webTablePage.elements.pageChangeInput().should("have.value", 1);
@@ -155,27 +164,22 @@ describe("Interacting with different elements", function() {
     })
 
     describe("Buttons", function() {
-        it("Interaction with the button by double-clicking", function() {
+        it("Check mouse event handling on buttons", function() {
             cy.visit("/buttons");
+
             cy.get("#doubleClickBtn").dblclick();
             cy.get("#doubleClickMessage").should("have.text", "You have done a double click");
-        })
 
-        it("Interaction with the button using the right click", function() {
-            cy.visit("/buttons");
             cy.get("#rightClickBtn").rightclick();
             cy.get("#rightClickMessage").should("have.text", "You have done a right click");
-        })
 
-        it("Interaction with the button with dynamic id using the click", function() {
-            cy.visit("/buttons");
             cy.get("button").contains(/^Click Me/).click();
             cy.get("#dynamicClickMessage").should("have.text", "You have done a dynamic click");
         })
     })
 
     describe("Links", function() {
-        it("Check the new tab opening by clicking on the link", function() {
+        it("Open a new tab by clicking on the link", function() {
             cy.visit("/links");
 
             cy.get("#simpleLink").then($link => {
@@ -187,7 +191,7 @@ describe("Interacting with different elements", function() {
             })
         })
 
-        it("Check the new tab opening by clicking on the dynamic text link", function() {
+        it("Open a new tab by clicking on the dynamic text link", function() {
             cy.visit("/links");
 
             cy.get("a").contains(/^Home[a-zA-Z0-9]*[a-zA-Z0-9]/).then($link => {
@@ -199,7 +203,7 @@ describe("Interacting with different elements", function() {
             })
         })
 
-        it("Check that the links making the API call return the correct response", function() {
+        it("Check that the links making the API call, return the correct response", function() {
             cy.visit("/links");
 
             cy.intercept("GET", "https://demoqa.com/*").as("apiCall");
@@ -225,7 +229,7 @@ describe("Interacting with different elements", function() {
     })
 
     describe("Broken Links", function() {
-        it("Check images has loaded", function() {
+        it("Confirm images load successfully", function() {
             cy.visit("/broken");
 
             cy.get(".col-md-6").find("img").each(($img: JQuery<HTMLImageElement>) => {
@@ -236,7 +240,7 @@ describe("Interacting with different elements", function() {
             }) 
         })
 
-        it("Check that links are not broken", function() {
+        it("Check that the links making the API call, return the correct response status code", function() {
             cy.visit("/broken");
 
             cy.get(".col-md-6").find("a").each(($link: JQuery<HTMLAnchorElement>) => { 
@@ -250,8 +254,8 @@ describe("Interacting with different elements", function() {
         })
     })
 
-    describe.only("Upload and download files", function() {
-        it("Check that clicking on the link downloads the image", function() {
+    describe("Upload and download files", function() {
+        it("Download image by clicking on the link", function() {
             deleteDownloadsFolder();
 
             cy.visit("/upload-download");
@@ -260,7 +264,7 @@ describe("Interacting with different elements", function() {
             readFileFromDownloads("sampleFile.jpeg", "base64");
         })
 
-        it("Check file upload capability", function() {
+        it("Upload a file using the file selection dialog", function() {
             let fileName = "dog.jpeg";
 
             cy.visit("/upload-download");

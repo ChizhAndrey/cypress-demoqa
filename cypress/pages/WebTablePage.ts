@@ -3,7 +3,7 @@ import { checkTableRowsForSubstring } from "../support/utilityFunctions";
 const { _ } = Cypress;  //(Lodash)
 
 
-export interface WebTableUserData {
+interface WebTableEmployeeData {
     firstName: string, 
     lastName: string, 
     email: string, 
@@ -12,18 +12,18 @@ export interface WebTableUserData {
     department: string,
 }
 
-type THC = keyof WebTableUserData;
+type THC = keyof WebTableEmployeeData;
 
 class WebTablePage {
     elements = {
         addNewRecordButton: () => cy.get("#addNewRecordButton"),
-        firstNameField: () => cy.get("#firstName"),
-        lastNameField: () => cy.get("#lastName"),
-        emailField: () => cy.get("#userEmail"),
-        ageField: () => cy.get("#age"),
-        salaryField: () => cy.get("#salary"),
-        departmentField: () => cy.get("#department"),
-        submitButton: () => cy.get("#submit"),
+        regFormFirstNameField: () => cy.get("#firstName"),
+        regFormLastNameField: () => cy.get("#lastName"),
+        regFormEmailField: () => cy.get("#userEmail"),
+        regFormAgeField: () => cy.get("#age"),
+        regFormSalaryField: () => cy.get("#salary"),
+        regFormDepartmentField: () => cy.get("#department"),
+        regFormSubmitButton: () => cy.get("#submit"),
         tableRows: () => cy.get(".rt-tr-group").children(),
         searchBox: () => cy.get("#searchBox"),
         firstNameHeader: () => cy.get(".rt-resizable-header:contains('First Name')"),
@@ -39,34 +39,34 @@ class WebTablePage {
     }
 
     enterFirstNameToRegForm(firstName: string) {
-        this.elements.firstNameField().clear().type(firstName);
+        this.elements.regFormFirstNameField().clear().type(firstName);
     }
 
     enterLastNameToRegForm(lastName: string) {
-        this.elements.lastNameField().clear().type(lastName);
+        this.elements.regFormLastNameField().clear().type(lastName);
     }
 
     enterEmailToRegForm(email: string) {
-        this.elements.emailField().clear().type(email);
+        this.elements.regFormEmailField().clear().type(email);
     }
 
     enterAgeToRegForm(age: number) {
-        this.elements.ageField().clear().type(`${age}`);
+        this.elements.regFormAgeField().clear().type(`${age}`);
     }
 
     enterSalaryToRegForm(salary: number) {
-        this.elements.salaryField().clear().type(`${salary}`);
+        this.elements.regFormSalaryField().clear().type(`${salary}`);
     }
 
     enterDepartmentToRegForm(department: string) {
-        this.elements.departmentField().clear().type(department);
+        this.elements.regFormDepartmentField().clear().type(department);
     }
 
     submit() {
-        this.elements.submitButton().click();
+        this.elements.regFormSubmitButton().click();
     }
 
-    fillAndSubmitRegForm(data: WebTableUserData) {
+    fillAndSubmitRegForm(data: WebTableEmployeeData) {
         this.enterFirstNameToRegForm(data.firstName);
         this.enterLastNameToRegForm(data.lastName);
         this.enterEmailToRegForm(data.email);
@@ -76,7 +76,7 @@ class WebTablePage {
         this.submit();
     }
 
-    createUserDataFromTableRow(data: string[]): WebTableUserData {
+    createEmployeeDataFromTableRow(data: string[]): WebTableEmployeeData {
         return {
             firstName: data[0],
             lastName: data[1],
@@ -88,7 +88,7 @@ class WebTablePage {
     }
 
     createArrayObjectsFromTableRows($rows: JQuery<HTMLElement>) {
-        const rowsArray: WebTableUserData[] = [];
+        const rowsArray: WebTableEmployeeData[] = [];
 
         $rows.each((i, row) => {
             //Если строка пустая - пропускаем
@@ -97,16 +97,16 @@ class WebTablePage {
                 const rowArray = Array.from(row.children).map(cell => cell.textContent ? cell.textContent : "");
 
                 //Создаем из массива объект и пушим в массив
-                rowsArray.push(this.createUserDataFromTableRow(rowArray));
+                rowsArray.push(this.createEmployeeDataFromTableRow(rowArray));
             }
         })
 
         return cy.wrap(rowsArray, {log: false});
     }
 
-    deleteRowFromTable(userEmail: string) {
+    deleteRowFromTable(employeeEmail: string) {
         this.elements.tableRows()
-            .contains(userEmail)
+            .contains(employeeEmail)
             .parent()
             .find("span[title='Delete']")
             .click();  
@@ -193,10 +193,10 @@ class WebTablePage {
     }
 
     fillTableWithGeneratedData(count: number) {
-        const usersData = this.createUsersDataForWebTable(count);
-        usersData.forEach(user => {
+        const employeesData = this.createEmployeesDataForWebTable(count);
+        employeesData.forEach(employee => {
             this.elements.addNewRecordButton().click();
-            this.fillAndSubmitRegForm(user);
+            this.fillAndSubmitRegForm(employee);
         })
     }
 
@@ -212,11 +212,11 @@ class WebTablePage {
         this.elements.pageChangeInput().type(`${pageNumber}`);
     }
 
-    private createUsersDataForWebTable(count: number): WebTableUserData[] {
-        const usersArray: WebTableUserData[] = [];
+    private createEmployeesDataForWebTable(count: number): WebTableEmployeeData[] {
+        const employeesArray: WebTableEmployeeData[] = [];
 
         for(let i = 0; i < count; i++) {
-            const user: WebTableUserData = {
+            const employee: WebTableEmployeeData = {
                 firstName: faker.name.firstName(),
                 lastName: faker.name.lastName(),
                 email: faker.internet.email(),
@@ -231,11 +231,13 @@ class WebTablePage {
                 department: faker.name.jobArea()
             }
     
-            usersArray.push(user);
+            employeesArray.push(employee);
         }
     
-        return usersArray;
+        return employeesArray;
     }
 }
 
-export default new WebTablePage();
+const webTablePage = new WebTablePage();
+
+export { webTablePage, WebTableEmployeeData};

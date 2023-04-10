@@ -1,4 +1,4 @@
-export interface TextBoxUserData {
+interface TextBoxUserData {
     userName?: string,
     userEmail?: string,
     currentAddress?: string,
@@ -18,6 +18,7 @@ class TextBoxPage {
         outputEmail: () => cy.get("#email"),
         outputCurrentAddress: () => cy.get("#currentAddress"),
         outputPermanentAddress: () => cy.get("#permanentAddress"),
+        outoutContainer: () => cy.get("#output").find("div"),
         outputFields: () => cy.get("#output").find("div").children(),
     };
 
@@ -75,4 +76,6 @@ class TextBoxPage {
     }
 }
 
-export default new TextBoxPage();
+const textBoxPage = new TextBoxPage();
+
+export { textBoxPage, TextBoxUserData };
