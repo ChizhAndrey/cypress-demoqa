@@ -282,4 +282,24 @@ describe("Interacting with different elements", function() {
             cy.get("#uploadedFilePath").should("have.text", `C:\\fakepath\\${fileName}`);
         })
     })
+
+    describe("Dynamic Properties", function() {
+        it("Check that buttons properties change over time", function() {
+            cy.visit("/dynamic-properties");
+    
+            cy.get("#enableAfter").should("be.disabled");
+            cy.get("#colorChange").should($btn => {
+                expect($btn.attr("class")).to.not.include("text-danger");
+                expect($btn.css("color")).to.equal("rgb(255, 255, 255)");
+            })
+            cy.get("#visibleAfter").should("not.exist");
+    
+            cy.get("#enableAfter", {timeout: 5000}).should("not.be.disabled");
+            cy.get("#colorChange").should($btn => {
+                expect($btn.attr("class")).to.include("text-danger");
+                expect($btn.css("color")).to.equal("rgb(220, 53, 69)");
+            })
+            cy.get("#visibleAfter").should("be.visible");
+        })
+    })
 })
