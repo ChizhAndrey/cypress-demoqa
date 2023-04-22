@@ -96,8 +96,28 @@ export const deleteDownloadsFolder = () => {
     cy.task("deleteFolder", downloadsFolder);
 }
   
-//Читает файл используя переданную кодировку из папки "donwloads".
-export const readFileFromDownloads = (fileName: string, encoding: Cypress.Encodings) => {
-    const downloadsFolder = Cypress.config("downloadsFolder");
-    cy.readFile(path.join(downloadsFolder, fileName), encoding);
+//Читает файл из папки используя заданную кодировку.
+export const readFileFromFolder = (folder: string, filePath: string, encoding: Cypress.Encodings) => {
+    const fullPath = path.join(folder, filePath);
+    return cy.readFile(fullPath, encoding);
+}
+
+//Читает файл из папки "donwloads" используя переданную кодировку.
+export const readFileFromDownloands = readFileFromFolder.bind(null, Cypress.config("downloadsFolder"));
+
+export const deleteFolderContents = (folderPath: string) => {
+    cy.task("deleteFolderContents", folderPath);
+}
+
+export const writeDataToFixtureFile = (folderPath: number | string | Buffer | URL, data: string | NodeJS.ArrayBufferView) => {
+    const fixturesFolder = Cypress.config("fixturesFolder");
+
+    if(typeof fixturesFolder === "string") {
+        const fullPath = path.join(fixturesFolder, `${folderPath}`);
+        cy.task("writeDataToFile", {path: fullPath, data});
+    }
+}
+
+export const copyFile = (src: string | Buffer | URL, dst: string | Buffer | URL, flags?: number) => {
+    cy.task("copyFile", {src, dst, flags});
 }

@@ -1,7 +1,7 @@
 import { textBoxPage, TextBoxUserData } from "../pages/TextBoxPage";
 import checkBoxPage from "../pages/CheckBoxPage";
 import { webTablePage, WebTableEmployeeData } from "../pages/WebTablePage";
-import { checkHTTPResponseStatusCode, deleteDownloadsFolder, readFileFromDownloads } from "../support/utilityFunctions";
+import { checkHTTPResponseStatusCode, deleteDownloadsFolder, readFileFromDownloands } from "../support/utilityFunctions";
 const { _ } = Cypress;  //(Lodash)
 
 describe("Interacting with different elements", function() {
@@ -261,7 +261,7 @@ describe("Interacting with different elements", function() {
             cy.visit("/upload-download");
 
             cy.get("#downloadButton").click();
-            readFileFromDownloads("sampleFile.jpeg", "base64");
+            readFileFromDownloands("sampleFile.jpeg", "base64");
         })
 
         it("Upload a file using the file selection dialog", function() {
