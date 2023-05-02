@@ -36,5 +36,11 @@ export default defineConfig({
         viewportWidth: 1920,
         hideXHRAndFetch: true,
         hideExc: true,
+        blockHosts: [
+            "www.googletagservices.com",
+            "pagead2.googlesyndication.com",
+            "stats.g.doubleclick.net",
+            "www.google-analytics.com",
+        ]
     },
 });
