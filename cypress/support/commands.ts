@@ -11,3 +11,28 @@ Cypress.Commands.add("getIframeBody", (selector) => {
                 .should("not.be.undefined")
                 .then<JQuery<HTMLBodyElement>>(cy.wrap);
 })
+
+
+Cypress.Commands.overwrite<"click", "element">("click", (originalFn, element, x, y, options) => {
+    if(options && options.clicks) {
+        options.log = false;     
+
+        Cypress._.times(options.clicks - 1, () => {
+            originalFn(element, x, y, options);
+        });
+
+        Cypress.log({
+            $el: element,
+            name: "click",
+            message: `Clicked ${options.clicks} times`,
+            consoleProps: () => {
+                return {
+                    "Options": options,
+                }
+            }
+        });
+    }
+
+    return originalFn(element, x, y, options);
+})
+
