@@ -127,7 +127,7 @@ describe("Interaction with alerts, frames and windows", function() {
     })
 
     describe("Modal dialogs", function() {
-        it("Open modal windows by clicking on the buttons", function() {
+        it("Open modal dialogs by clicking on the buttons", function() {
             cy.visit("/modal-dialogs");
 
             cy.get("#showSmallModal").click();
