@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/ChizhAndrey/cypress-demoqa#readme",
   "devDependencies": {
+    "@4tw/cypress-drag-drop": "^2.2.3",
     "@faker-js/faker": "^7.6.0",
     "@types/fs-extra": "^11.0.1",
     "cypress": "^12.6.0",

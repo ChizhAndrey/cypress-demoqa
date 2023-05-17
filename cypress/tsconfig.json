@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["ES2022", "dom"],
-    "types": ["cypress", "node", "cypress-real-events"],
+    "types": ["cypress", "node", "cypress-real-events", "@4tw/cypress-drag-drop"],
     //включает добавление строки "use strict" в каждый скомпилированный файл
     "alwaysStrict": true,
     //подсвечивает все места где тип переменной не определён, значит он any

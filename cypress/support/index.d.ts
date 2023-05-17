@@ -7,6 +7,7 @@ declare global {
             getIframeDocument(s: string): Cypress.Chainable<Document>,
             getIframeBody(s: "iframe"): Cypress.Chainable<JQuery<HTMLBodyElement>>,
             getIframeBody(s: string): Cypress.Chainable<JQuery<HTMLBodyElement>>,
+            drag(targetAlias: string, options?: Options): Chainable<boolean>, //???
         }
         interface ResolvedConfigOptions {
             hideXHRAndFetch?: boolean;
