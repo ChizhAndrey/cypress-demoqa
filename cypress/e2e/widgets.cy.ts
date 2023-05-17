@@ -39,8 +39,8 @@ describe("Widgets", function() {
                     cy.get("#autoCompleteMultipleInput").type("{enter}");
                 })
 
-                cy.get(".auto-complete__multi-value").each((el, i) => {
-                    expect(el.text()).to.be.equal(colors[i]);
+                cy.get(".auto-complete__multi-value").each(($el, i) => {
+                    expect($el.text()).to.be.equal(colors[i]);
                 })  
             })
         })
@@ -113,9 +113,9 @@ describe("Widgets", function() {
                 .click();
 
             cy.get(".react-datepicker__year-read-view").click();
-            cy.get(".react-datepicker__year-option").then(opt => {
-                const firstOption = opt[1].textContent!; //2028
-                const lastOption = opt[opt.length - 2].textContent!; //2018
+            cy.get(".react-datepicker__year-option").then($opt => {
+                const firstOption = $opt[1].textContent!; //2028
+                const lastOption = $opt[$opt.length - 2].textContent!; //2018
 
                 if(dateWithTimeObj.year >= lastOption && dateWithTimeObj.year <= firstOption) {
                     cy.get(".react-datepicker__year-option")
@@ -165,7 +165,7 @@ describe("Widgets", function() {
                     .then(width => {
                         if(width) {
                             cy.get("input[type='range']")
-                                .realClick({position: {x: (width / 100 * position) + calculation, y: 0}})
+                                .realClick({position: {x: (width / 100 * position) + calculation, y: 0}});
                         }
                     })
             });
@@ -197,7 +197,7 @@ describe("Widgets", function() {
                     .then(() => {
                         cy.get("button")
                             .contains("Stop")
-                            .click()
+                            .click();
                     });
 
                 //Resuming progressbar
@@ -386,7 +386,7 @@ describe("Widgets", function() {
                                 cy.get("li:contains('Sub Sub Item 2')")
                                     .should("have.css", "background-color", "rgb(36, 175, 21)")
                                     .realHover()
-                                    .should("have.css", "background-color", "rgb(0, 63, 32)")
+                                    .should("have.css", "background-color", "rgb(0, 63, 32)");
                             })
                     })  
             })
@@ -428,11 +428,11 @@ describe("Widgets", function() {
 
                     colors.forEach((color, i) => {
                         cy.get("input").type(`${color}{enter}`);
-                        if(i == colors.length - 1) cy.root().click("right")
+                        if(i == colors.length - 1) cy.root().click("right");
                     })
 
-                    cy.get("[class$='-multiValue']").each((elem, i) => {
-                        expect(elem.text()).to.equal(colors[i]);
+                    cy.get("[class$='-multiValue']").each(($elem, i) => {
+                        expect($elem.text()).to.equal(colors[i]);
                     })
                 })
 
