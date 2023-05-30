@@ -37,15 +37,15 @@ export const loginByAPI = (userData: APIUser) => {
                 password: userData.password,
             }
         }).then((res) => {
-            expect(res.status).to.equal(200);
+            expect(res.status).to.equal(200, "Status code");
             
-            cy.setCookie("userName", userData.userName);
-            cy.setCookie("userID", res.body.userId);
-            cy.setCookie("token", res.body.token);
-            cy.setCookie("expires", res.body.expires);
-            cy.setCookie("_gat_UA-109033876-1", "1")
-        })
-
+            cy.document().then(document => {
+                document.cookie = `userName=${userData.userName}; expires=Session; path=/`;
+                document.cookie = `userID=${res.body.userId}; expires=Session; path=/`;
+                document.cookie = `token=${res.body.token}; expires=Session; path=/`;
+                document.cookie = `expires=${res.body.expires}; expires=Session; path=/`;
+            });
+        });
     });
 }
 
@@ -108,7 +108,6 @@ export const deleteUser = (userID: string) => {
 }
 
 export const createUserData = (): APIUser => {
-
     return {
         userName: faker.name.firstName() + faker.name.lastName() + faker.random.numeric(2),
         password: "$Qwerty_1234",
@@ -200,6 +199,6 @@ export const updateBookForUser = (currentIsbn: ISBN, newIsbn: ISBN, userId: stri
                 userId,
                 isbn: newIsbn
             }
-        })
-    })
+        });
+    });
 }

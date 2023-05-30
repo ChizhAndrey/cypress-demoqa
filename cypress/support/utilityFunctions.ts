@@ -121,3 +121,22 @@ export const writeDataToFixtureFile = (folderPath: number | string | Buffer | UR
 export const copyFile = (src: string | Buffer | URL, dst: string | Buffer | URL, flags?: number) => {
     cy.task("copyFile", {src, dst, flags});
 }
+
+export const loginByFormInTheBookStoreApp = (userName: string, password: string) => {
+    cy.session(["loginByForm", userName], () => {
+        cy.visit("/login");
+
+        cy.get("[placeholder='UserName']")
+            .clear()
+            .type(userName);
+            
+        cy.get("[placeholder='Password']")
+            .clear()
+            .type(password);
+
+        cy.get("button:contains('Login')").click();
+
+        cy.url().should("equal", Cypress.config().baseUrl + "profile");
+        cy.get("#userName-value").should("have.text", userName);
+    });
+}

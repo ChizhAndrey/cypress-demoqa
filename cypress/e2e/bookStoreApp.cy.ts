@@ -3,7 +3,6 @@ import * as bookStoreAPI from "../support/utilityAPIFunctions";
 describe("Book store application", function() {
 
     describe("API", function() {
-
         describe("Account", function() {
             it("Create user", function() {
                 const userData = bookStoreAPI.createUserData();
@@ -178,6 +177,154 @@ describe("Book store application", function() {
                     });
                 });
             })
+        })
+    })
+
+    describe("E2E", function() {
+        it("Login in Book Store App", function() {
+            cy.fixture<{userName: string, password: string}>("userDataForAPI").then(({userName, password}) => {
+                cy.visit("/login");
+            
+                cy.get("[placeholder='UserName']")
+                    .clear()
+                    .type(userName);
+                    
+                cy.get("[placeholder='Password']")
+                    .clear()
+                    .type(password);
+            
+                cy.get("button:contains('Login')").click();
+            
+                cy.url().should("equal", Cypress.config().baseUrl + "profile");
+                cy.get("#userName-value").should("have.text", userName);
+            });
+        })
+    
+        it("Add book to user collection", function() {
+            const userData = bookStoreAPI.createUserData();
+        
+            cy.log("User", userData);
+        
+            bookStoreAPI.createUser(userData);
+            bookStoreAPI.loginByAPI(userData);
+    
+            cy.visit("/books")
+    
+            cy.get("span:contains('Git Pocket Guide')").click();
+            cy.url().should("equal", Cypress.config().baseUrl + "books?book=9781449325862"); 
+            cy.get("#ISBN-wrapper").should("contain.text", "9781449325862");
+    
+            cy.window().then(win => {
+                cy.stub(win, "alert").as("alert");
+            });
+    
+            cy.get("button:contains('Add To Your Collection')").click();
+            cy.get("@alert")
+                .its("firstCall.args.0")
+                .should("be.equal", "Book added to your collection.");
+                
+            cy.visit("/profile");
+    
+            cy.get(".rt-tbody div[role='row']:contains('Git Pocket Guide')").should("be.visible");
+        })
+    
+        it("Delete a book from a user collection", function() {
+            const userData = bookStoreAPI.createUserData();
+        
+            cy.log("User", userData);
+        
+            cy.fixture<{books: bookStoreAPI.APIUser["books"]}>("books").then(({books}) => {
+                const isbn = books.map(book => { return { isbn: book.isbn } })[0];
+                
+                bookStoreAPI.createUser(userData).then(({body}) => {
+                    bookStoreAPI.loginByAPI(userData);
+                    bookStoreAPI.addBooksToUser(body.userID, [isbn]);
+                });
+    
+                cy.visit("/profile").then(win => {
+                    cy.stub(win, "alert").as("alert");
+                });
+    
+                cy.get(".rt-tbody div[role='row']:contains('Git Pocket Guide')").within(() => {
+                    cy.get("span[title='Delete']").click();
+                });
+    
+                cy.get(".modal-dialog[role='document']").within(() => {
+                    cy.get(".modal-body").should("have.text", "Do you want to delete this book?");
+                    cy.get("button:contains('OK')").click();
+                });
+    
+                cy.get("@alert")
+                    .its("firstCall.args.0")
+                    .should("be.equal", "Book deleted.");
+    
+                cy.get(".rt-tbody div[role='row']:contains('Git Pocket Guide')").should("not.exist");
+            });
+        })
+    
+        it("Delete all books from a user collection", function() {
+            const userData = bookStoreAPI.createUserData();
+        
+            cy.log("User", userData);
+    
+            cy.fixture<{books: bookStoreAPI.APIUser["books"]}>("books").then(({books}) => {
+                const collectionOfIsbns = Cypress._.sampleSize(books, 5).map(book => { return { isbn: book.isbn } });
+                
+                bookStoreAPI.createUser(userData).then(({body}) => {
+                    bookStoreAPI.loginByAPI(userData);
+                    bookStoreAPI.addBooksToUser(body.userID, collectionOfIsbns);
+                });
+    
+                cy.visit("/profile").then(win => {
+                    cy.stub(win, "alert").as("alert");
+                });
+    
+                cy.get(".rt-tbody div[role='row']")
+                    .not(".-padRow")
+                    .should("have.length", 5);
+    
+                cy.get(".buttonWrap button:contains('Delete All Books')").click();
+    
+                cy.get(".modal-dialog[role='document']").within(() => {
+                    cy.get(".modal-body").should("have.text", "Do you want to delete all books?");
+                    cy.get("button:contains('OK')").click();
+                });
+    
+                cy.get("@alert")
+                    .its("firstCall.args.0")
+                    .should("be.equal", "All Books deleted.");
+    
+                cy.get(".rt-tbody div[role='row']")
+                    .not(".-padRow")
+                    .should("not.exist");
+            });
+        })
+    
+        it("Delete user account", function() {
+            const userData = bookStoreAPI.createUserData();
+        
+            cy.log("User", userData);
+    
+            bookStoreAPI.createUser(userData);
+            bookStoreAPI.loginByAPI(userData);
+    
+            cy.visit("/profile").then(win => {
+                cy.stub(win, "alert").as("alert");
+            });
+    
+            cy.get(".buttonWrap button:contains('Delete Account')").click();
+    
+            cy.get(".modal-dialog[role='document']").within(() => {
+                cy.get(".modal-body").should("have.text", "Do you want to delete your account?");
+                cy.get("button:contains('OK')").click();
+            });
+    
+            cy.get("@alert")
+                .its("firstCall.args.0")
+                .should("be.equal", "User Deleted.");
+    
+            cy.url().should("equal", Cypress.config().baseUrl + "login");
+            cy.get("#userForm").should("be.visible");
         })
     })
 })
