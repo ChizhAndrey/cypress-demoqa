@@ -1,0 +1,19 @@
+{
+  "name": "demoqa",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Andrey Chizhelikov",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "cypres run",
+    "open": "cypress open"
+  },
+  "devDependencies": {
+    "@types/cypress": "^0.1.6",
+    "cypress": "^14.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
