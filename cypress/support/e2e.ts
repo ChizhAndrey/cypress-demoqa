@@ -1,10 +1,12 @@
 
 
-before(() => {
+beforeEach(() => {
     if (Cypress.config('hideXHRAndFetch')) {
         
         // Hide fetch/XHR requests from Command Log
         cy.intercept({ resourceType: /xhr|fetch/ }, { log: false });
+
+        
     }
 })
 
