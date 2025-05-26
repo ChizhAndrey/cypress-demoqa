@@ -10,8 +10,9 @@
     "rootDir": "./",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "types": ["cypress"]
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*", "cypress/support/types"],
   "exclude": ["node_modules"]
 }

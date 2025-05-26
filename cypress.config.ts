@@ -11,6 +11,8 @@ export default defineConfig({
             "stats.g.doubleclick.net",
             "www.google-analytics.com",
         ],
+        hideXHRAndFetch: true,
+        hideUncaughtExc: true,
         specPattern: 'cypress/tests/**/*.cy.{js,jsx,ts,tsx}',
     },
 });
