@@ -41,24 +41,24 @@ function isOutputFormField(val: any): val is OutputField {
 
 class TextBoxPage {
     elements = {
-        userForm: () => cy.get("#userForm"),
-        userName: () => cy.get("#userName"),
-        userEmail: () => cy.get("#userEmail"),
-        currentAddress: () => cy.get("#currentAddress"),
-        permanentAddress: () => cy.get("#permanentAddress"),
-        submitButton: () => cy.get("#submit"),
-        output: () => cy.get("#output"),
-        outputUserName: () => cy.get("#name"),
-        outputUserEmail: () => cy.get("#email"),
-        outputCurrentAddress: () => cy.get("#currentAddress"),
-        outputPermanentAddress: () => cy.get("#permanentAddress"),
-        outputContainer: () => cy.get("#output").find("div"),
-        outputFields: () => cy.get("#output").find("div").children(),
+        userForm: () => cy.get('#userForm'),
+        userName: () => cy.get('#userName'),
+        userEmail: () => cy.get('#userEmail'),
+        currentAddress: () => cy.get('#currentAddress'),
+        permanentAddress: () => cy.get('#permanentAddress'),
+        submitButton: () => cy.get('#submit'),
+        output: () => cy.get('#output'),
+        outputUserName: () => cy.get('#name'),
+        outputUserEmail: () => cy.get('#email'),
+        outputCurrentAddress: () => cy.get('#currentAddress'),
+        outputPermanentAddress: () => cy.get('#permanentAddress'),
+        outputContainer: () => cy.get('#output').find('div'),
+        outputFields: () => cy.get('#output').find('div').children(),
     };
 
     visit() {
-        cy.visit("/text-box");
-        this.elements.userForm().should("be.visible");
+        cy.visit('/text-box');
+        this.elements.userForm().should('be.visible');
 
         return this;
     }
