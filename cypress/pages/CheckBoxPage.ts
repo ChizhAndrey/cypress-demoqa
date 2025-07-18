@@ -37,25 +37,84 @@ class CheckBoxPage {
     }
 
     checkNode(node: TreeNode) {
-        cy.get(`label[for="tree-node-${node}"] .rct-checkbox`).click();
+        cy.get(`#tree-node-${node}`).should('not.be.checked');
+        cy.get(`label[for="tree-node-${node}"]`).click();
+
         return this;
     }
 
-    assertParentNodesVisualState(childNode: TreeNode, expectedClass: string) {
+    uncheckNode(node: TreeNode) {
+        cy.get(`#tree-node-${node}`).should('be.checked');
+        cy.get(`label[for="tree-node-${node}"]`).click();
+
+        return this;
+    }
+
+    private isParrentNode(node: TreeNode): Cypress.Chainable<boolean> {
+        return cy.get(`#tree-node-${node}`)
+            .parents('li')
+            .first()
+            .then(($li: JQuery<HTMLLIElement>) => {
+                return $li.hasClass('rct-node-parent')
+            });
+    }
+
+    private assertSvgParentNodeContainsClass($li: JQuery<HTMLLIElement>, expectedClass: string) {
+        cy.wrap($li)
+            .find('.rct-checkbox svg')
+            .first()
+            .should('contain.class', expectedClass);
+    }
+
+    private assertParentNodesVisualState(childNode: TreeNode, expectedClass: string) {
+        
         cy.get(`#tree-node-${childNode}`)
             .parentsUntil('#tree-node', 'li.rct-node-parent')
-            .each((li: HTMLLIElement) => {
-                cy.wrap(li).find('.rct-checkbox svg').first()
-                    .should('contain.class', expectedClass);
+            .each(($li: JQuery<HTMLLIElement>, i: number, collection: HTMLLIElement[]) => {
+                // Если коллекция содержит только один элемент, значит проверяем корневой узел
+                if(collection.length === 1) {
+                    // Проверяем, является ли childNode родительским узлом.
+                    // Если НЕ является — проверяем визуальное состояние родителя.
+                    this.isParrentNode(childNode).then(isParent => {
+                        if(!isParent) this.assertSvgParentNodeContainsClass($li, expectedClass);
+                    });
+                } else if(collection.length > 1 && i === 0) {
+                    // Первый элемент в цепочке родителей может быть самим childNode,
+                    // если он является родительским узлом. Пропускаем его.
+                    this.isParrentNode(childNode).then(isParent => {
+                        if(!isParent) this.assertSvgParentNodeContainsClass($li, expectedClass);
+                    });
+                } else {
+                    this.assertSvgParentNodeContainsClass($li, expectedClass);
+                }
             });
         
         return this;
     }
 
+    private assertChildNodesChecked(parentNode: TreeNode) {
+        cy.get(`#tree-node-${parentNode}`)
+            .parents('li').first()
+            .find('ol input[type="checkbox"]')
+            .each(($input: JQuery<HTMLInputElement>) => {
+                cy.wrap($input).should('be.checked');
+            });
+    }
+
     assertNodeIsChecked(node: TreeNode) {
         cy.get(`#tree-node-${node}`).should('be.checked');
         this.assertParentNodesVisualState(node, 'rct-icon-half-check');
+        this.isParrentNode(node).then((isParent: boolean) => {
+            if(isParent) this.assertChildNodesChecked(node);
+        });
 
+        return this;
+    }
+
+    assertNodeIsUnchecked(node: TreeNode) {
+        cy.get(`#tree-node-${node}`).should('not.be.checked');
+        this.assertParentNodesVisualState(node, 'rct-icon-uncheck');
+        // Refinement required
         return this;
     }
 

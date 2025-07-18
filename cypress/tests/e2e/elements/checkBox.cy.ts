@@ -4,7 +4,7 @@ describe('Checkbox', function() {
 
     beforeEach(() => {
         checkBoxPage.visit();
-    })
+    });
 
     it('Expand all checkboxes', function() {
         checkBoxPage
