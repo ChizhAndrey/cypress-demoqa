@@ -1,4 +1,4 @@
-
+import './commands/commands';
 
 beforeEach(() => {
     if (Cypress.config('hideXHRAndFetch')) {
