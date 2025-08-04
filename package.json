@@ -11,6 +11,7 @@
     "open": "cypress open"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.9.0",
     "@types/cypress": "^0.1.6",
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.10",
