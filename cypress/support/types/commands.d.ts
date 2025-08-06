@@ -8,5 +8,8 @@ declare namespace Cypress {
       conditionFn: () => Cypress.Chainable<boolean>,
       maxAttempts?: number
     ): Chainable<void>;
+
+    getIframeDocument(selector: string): Cypress.Chainable<Document>,
+    getIframeBody(selector: string): Cypress.Chainable<JQuery<HTMLBodyElement>>;
   }
 }
