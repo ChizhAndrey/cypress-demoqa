@@ -13,5 +13,9 @@ declare global {
             hideXHRAndFetch?: boolean
             hideUncaughtExc?: boolean
         }
+
+        interface ClickOptions {
+            clicks?: number,
+        }
     }
 }
